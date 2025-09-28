@@ -9,7 +9,7 @@ export default function Home({ navigation}) {
             <TouchableOpacity onPress={() => navigation.navigate('QuizSelection')}>
                 <Text>"Jogar Quizzes (Não sabemos o plural de Quiz)"</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('QuizSettings')}> 
+            <TouchableOpacity onPress={() => navigation.navigate('HomeTema')}> 
                 <Text>"Lista de Quiz"</Text>
             </TouchableOpacity>
         </View>

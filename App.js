@@ -1,25 +1,27 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useEffect } from 'react';
-//import DhHelper from './path-to-dhhelper'; // Adjust the import according to your project structure
+import { DbHelper } from './utils/DbHelper';
 
-import home from './Screens/Home'; // Adjust the import according to your project structure
-import quizSelection from './Screens/QuizSelection'; // Adjust the import according to your project structure
-import quizSettings from './Screens/QuizSettings'; // Adjust the import according to your project structure
+import home from './Screens/Home'; 
+import quizSelection from './Screens/QuizSelection'; 
+import HomeTema from './Screens/HomeTema'; 
+import CrudTema from './Screens/CrudTema';
 
 const Stack = createStackNavigator();
 
 export default function App(){
- /*  useEffect(()=> {
-    DhHelper.startDb();
-  }, []) */
+  useEffect(()=> {
+    DbHelper.startDb();
+  }, [])
 
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={home}/>
         <Stack.Screen name="QuizSelection" component={quizSelection}/>
-        <Stack.Screen name="QuizSettings" component={quizSettings}/>
+        <Stack.Screen name="HomeTema" component={HomeTema}/>
+        <Stack.Screen name="CrudTema" component={CrudTema}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
