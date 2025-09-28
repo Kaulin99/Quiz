@@ -1,5 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 
+console.log("CARREGANDO DbHelper.js - " + new Date().toLocaleTimeString()); // <-- ADICIONE ESTA LINHA
+
 export class DbHelper {
     static GetConnection() {
         return SQLite.openDatabase('quiz_db');
