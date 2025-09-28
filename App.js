@@ -1,20 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { useEffect } from 'react';
+//import DhHelper from './path-to-dhhelper'; // Adjust the import according to your project structure
 
-export default function App() {
+import home from './Screens/Home'; // Adjust the import according to your project structure
+import quizSelection from './Screens/QuizSelection'; // Adjust the import according to your project structure
+import quizSettings from './Screens/QuizSettings'; // Adjust the import according to your project structure
+
+const Stack = createStackNavigator();
+
+export default function App(){
+ /*  useEffect(()=> {
+    DhHelper.startDb();
+  }, []) */
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={home}/>
+        <Stack.Screen name="QuizSelection" component={quizSelection}/>
+        <Stack.Screen name="QuizSettings" component={quizSettings}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
