@@ -3,11 +3,11 @@ import * as SQLite from 'expo-sqlite';
 console.log("CARREGANDO DbHelper.js - " + new Date().toLocaleTimeString()); // <-- ADICIONE ESTA LINHA
 
 export class DbHelper {
-    static GetConnection() {
-        return SQLite.openDatabase('quiz_db');
+    static async GetConnection() {
+        return await SQLite.openDatabaseAsync('quiz_db');
     }
 
-    static ThemeDbStart() {  
+    static async ThemeDbStart() {  
         const query = `CREATE TABLE IF NOT EXISTS tbtema (
          id INTEGER PRIMARY KEY,
          nome TEXT NOT NULL,    
@@ -21,7 +21,7 @@ export class DbHelper {
         });
     }
 
-    static startDb() {
+    static async startDb() {
         this.ThemeDbStart();
     }
 }
