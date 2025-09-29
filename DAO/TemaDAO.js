@@ -4,22 +4,21 @@ import { DbHelper } from '../utils/DbHelper';
 export class TemaDAO extends StandardDAO {
 
     constructor() {
-        // Isso está perfeito! Configura a tabela 'tbtema' para os métodos da classe pai.
-        super("tbtema");
+        super("tbtema"); // garante que o DAO saiba o nome da tabela
     }
 
-    // --- MÉTODO CREATE CORRIGIDO ---
-    async Create(model) {
+    async Insert(model) {
+        const db = DbHelper.GetConnection();
+        console.log("Inserindo no banco, tabela:", this.dbName);
+
         return new Promise((resolve, reject) => {
-            const db = DbHelper.GetConnection();
             db.transaction(tx => {
-                // Agora inclui as colunas nome, Player e TimePlayed
-                const query = `INSERT INTO ${this.nomeDb} (nome, Player, TimePlayed) VALUES (?, ?, ?)`;
-                tx.executeSql(query, [model.nome, model.Player, model.TimePlayed],
-                    (_, { insertId }) => {
-                        resolve(insertId);
-                    },
+                tx.executeSql(
+                    `INSERT INTO ${this.dbName} (nome, Player, TimePlayed) VALUES (?, ?, ?)`,
+                    [model.nome, model.Player, model.TimePlayed],
+                    (_, result) => resolve(result.rowsAffected === 1),
                     (_, error) => {
+                        console.error("Erro ao criar tema:", error);
                         reject(error);
                         return false;
                     }
@@ -28,18 +27,18 @@ export class TemaDAO extends StandardDAO {
         });
     }
 
-    // --- MÉTODO UPDATE CORRIGIDO ---
     async Update(model) {
+        const db = DbHelper.GetConnection();
+        console.log("Atualizando no banco, tabela:", this.dbName);
+
         return new Promise((resolve, reject) => {
-            const db = DbHelper.GetConnection();
             db.transaction(tx => {
-                // Agora inclui as colunas nome, Player e TimePlayed
-                const query = `UPDATE ${this.nomeDb} SET nome = ?, Player = ?, TimePlayed = ? WHERE id = ?`;
-                tx.executeSql(query, [model.nome, model.Player, model.TimePlayed, model.id],
-                    (_, { rowsAffected }) => {
-                        resolve(rowsAffected > 0);
-                    },
+                tx.executeSql(
+                    `UPDATE ${this.dbName} SET nome = ?, Player = ? WHERE id = ?`,
+                    [model.nome, model.Player, model.id],
+                    (_, result) => resolve(result.rowsAffected === 1),
                     (_, error) => {
+                        console.error("Erro ao atualizar tema:", error);
                         reject(error);
                         return false;
                     }

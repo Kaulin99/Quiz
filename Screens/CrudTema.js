@@ -1,45 +1,78 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import TemaController from '../Controller/TemaController';
 
-// 1. Crie a instância do controller fora do componente
+// Crie a instância do controller fora do componente
 const temaController = new TemaController();
 
 export default function CrudTema({ route, navigation }) {
     const [nome, setNome] = useState('');
+    const [player, setPlayer] = useState('');
     const temaId = route.params?.id;
 
+    // Carrega dados do tema se houver id
     useEffect(() => {
         if (temaId) {
-            // 2. Use a instância e o nome correto do método ('GetUnique')
-            temaController.GetUnique(temaId).then(tema => {
-                if (tema) setNome(tema.nome);
-            }).catch(error => console.error(error));
+            temaController.GetUnique(temaId)
+                .then(tema => {
+                    if (tema) {
+                        setNome(tema.nome);
+                        setPlayer(tema.Player);
+                    }
+                })
+                .catch(error => console.error("Erro ao carregar tema:", error));
         }
     }, [temaId]);
 
+    // Função de salvar (Insert ou Update)
     const handleSave = () => {
+        if (!nome.trim()) {
+            Alert.alert("Erro", "O nome do tema não pode ficar vazio!");
+            return;
+        }
+
+        if (!player.trim()) {
+            Alert.alert("Erro", "O nome do jogador não pode ficar vazio!");
+            return;
+        }
+
         if (temaId) {
-            // 3. Use a instância, o nome correto ('Update') e passe um único objeto 'model'
-            const model = { id: temaId, nome: nome };
-            temaController.Update(model).then(() => navigation.goBack());
+            // Update
+            console.log("Atualizando tema:", { id: temaId, nome, player, TimePlayed: 0 });
+            temaController.Update(temaId, nome, player)
+                .then(() => navigation.goBack())
+                .catch(error => console.error("Erro ao atualizar tema:", error));
         } else {
-            // 4. Use a instância e o nome correto ('Insert')
-            // O controller já cria o model, então podemos passar só o nome
-            temaController.Insert(nome).then(() => navigation.goBack());
+            // Insert
+            console.log("Criando tema:", { nome, player, TimePlayed: 0 });
+            temaController.Insert(nome, player)
+                .then(() => navigation.goBack())
+                .catch(error => console.error("Erro ao criar tema:", error));
         }
     };
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{temaId ? 'Editar Tema' : 'Criar Tema'}</Text>
+            
             <TextInput
                 style={styles.input}
                 placeholder="Nome do tema"
                 value={nome}
                 onChangeText={setNome}
             />
-            <Button title={temaId ? 'Salvar Alterações' : 'Criar'} onPress={handleSave} />
+
+            <TextInput
+                style={styles.input}
+                placeholder="Nome do jogador"
+                value={player}
+                onChangeText={setPlayer}
+            />
+
+            <Button
+                title={temaId ? 'Salvar Alterações' : 'Criar'}
+                onPress={handleSave}
+            />
         </View>
     );
 }

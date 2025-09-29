@@ -2,49 +2,48 @@ import TemaModel from "../Model/TemaModel";
 import { TemaDAO } from "../DAO/TemaDAO";
 
 export default class TemaService {
+  #dao;
 
-    #dao;
+  constructor() {
+    this.#dao = new TemaDAO();
+  }
 
-    constructor() { 
-        this.#dao = new TemaDAO();
-    }
+  async GetUnique(id) {
+    const register = await this.#dao.GetUnique(id);
 
-    async GetUnique (id) {
-        const register = await this.#dao.GetUnique(id);
+    if (!register) throw new Error("Não foi possível encontrar o tema");
 
-        if(!register) throw new Error("Não foi possível encontrar o tema");
+    return new TemaModel(
+      register.id,
+      register.nome,   // banco retorna "nome"
+      register.Player,
+      register.TimePlayed
+    );
+  }
 
-        const tema = new TemaModel(register.id, register.name);
+  async GetAll() {
+    const dados = await this.#dao.GetAll();
+    return dados.map(
+      (item) =>
+        new TemaModel(item.id, item.nome, item.Player, item.TimePlayed)
+    );
+  }
 
-        return tema;
-    }
+  async Insert(model) {
+    const result = await this.#dao.Insert(model);
+    if (!result) throw new Error("Não foi possível criar o Temastico");
+    return result; // retorna id do novo tema
+  }
 
-    async GetAll() {
+  async Update(model) {
+    const result = await this.#dao.Update(model);
+    if (!result) throw new Error("Não foi possível atualizar o teminha");
+    return result;
+  }
 
-        const dados = await this.#dao.GetAll();
-        let models = [];
-
-        for(const item of dados){
-            const model = new TemaModel(item.id, item.name,item.Player,item.TimePlayed);
-            models.push(model);
-        }
-
-        return models;
-    }
-
-    async Create(model) {
-        const result = this.#dao.Create(model)
-
-        if(!result) throw new Error("Não foi possível criar o tema");
-
-        return result;
-    }
-
-    async Update(model) {
-        const result = this.#dao.Update(model)
-
-        if(!result) throw new Error("Não foi possível atualizar o tema");
-
-        return result;
-    }
+  async Delete(id) {
+    const result = await this.#dao.Delete(id);
+    if (!result) throw new Error("Não foi possível deletar o tema");
+    return result;
+  }
 }

@@ -1,54 +1,54 @@
 import { DbHelper } from '../utils/DbHelper';
 
-class StandardDAO {
-    
-    nomeDb = "";
+export default class StandardDAO {
+
+    dbName = "";
 
     constructor(tbNome) {
-        this.nomeDb = tbNome;
+        this.dbName = tbNome;
+        if (!this.dbName) {
+            console.error("Erro: nome da tabela não foi definido no DAO!");
+        }
     }
 
-    // --- MÉTODO CORRIGIDO ---
+    // Buscar um registro único
     async GetUnique(id) {
+        const db = DbHelper.GetConnection();
         return new Promise((resolve, reject) => {
-            const db = DbHelper.GetConnection();
             db.transaction(tx => {
-                // CORREÇÃO: Usando a propriedade correta 'this.nomeDb'
-                const query = `SELECT * FROM ${this.nomeDb} WHERE id = ?`;
-                
-                tx.executeSql(query, [id], 
-                    // Callback de sucesso
+                tx.executeSql(
+                    `SELECT * FROM ${this.dbName} WHERE id = ?`,
+                    [id],
                     (_, { rows }) => {
-                        // A API retorna um objeto com 'rows', que contém um array '_array'
-                        if (rows.length > 0) {
-                            resolve(rows._array[0]); // Retorna o primeiro e único registro
-                        } else {
-                            resolve(null); // Nenhum registro encontrado
-                        }
+                        resolve(rows.length > 0 ? rows.item(0) : null);
                     },
-                    // Callback de erro
                     (_, error) => {
-                        reject(error); // Rejeita a promise em caso de erro
-                        return false; // Retornar false em callbacks de erro é uma boa prática
+                        console.error(`Erro ao buscar registro em ${this.dbName}:`, error);
+                        reject(error);
+                        return false;
                     }
                 );
             });
         });
     }
 
-    // --- MÉTODO CORRIGIDO ---
+    // Buscar todos os registros
     async GetAll() {
+        const db = DbHelper.GetConnection();
         return new Promise((resolve, reject) => {
-            const db = DbHelper.GetConnection();
             db.transaction(tx => {
-                // CORREÇÃO: Usando a propriedade correta 'this.nomeDb'
-                const query = `SELECT * FROM ${this.nomeDb}`;
-
-                tx.executeSql(query, [],
+                tx.executeSql(
+                    `SELECT * FROM ${this.dbName}`,
+                    [],
                     (_, { rows }) => {
-                        resolve(rows._array); // Retorna o array de registros
+                        const result = [];
+                        for (let i = 0; i < rows.length; i++) {
+                            result.push(rows.item(i));
+                        }
+                        resolve(result);
                     },
                     (_, error) => {
+                        console.error(`Erro ao buscar todos os registros em ${this.dbName}:`, error);
                         reject(error);
                         return false;
                     }
@@ -57,21 +57,18 @@ class StandardDAO {
         });
     }
 
-    // --- MÉTODO CORRIGIDO ---
+    // Deletar registro
     async Delete(id) {
+        const db = DbHelper.GetConnection();
         return new Promise((resolve, reject) => {
-            const db = DbHelper.GetConnection();
             db.transaction(tx => {
-                // CORREÇÃO: Usando a propriedade correta 'this.nomeDb'
-                const query = `DELETE FROM ${this.nomeDb} WHERE id = ?`;
-                
-                tx.executeSql(query, [id],
-                    (_, { rowsAffected }) => {
-                        // 'rowsAffected' informa quantas linhas foram alteradas
-                        resolve(rowsAffected > 0); // Retorna true se 1 ou mais linhas foram deletadas
-                    },
+                tx.executeSql(
+                    `DELETE FROM ${this.dbName} WHERE id = ?`,
+                    [id],
+                    (_, result) => resolve(result.rowsAffected === 1),
                     (_, error) => {
-                        reject(error);
+                        console.error(`Erro ao deletar registro em ${this.dbName}:`, error);
+                        reject(false);
                         return false;
                     }
                 );
@@ -79,16 +76,6 @@ class StandardDAO {
         });
     }
 
-    // Métodos a serem implementados
-    async Create(model) {
-        console.warn("Método Create não implementado.");
-        return null;
-    }
-
-    async Update(model) {
-        console.warn("Método Update não implementado.");
-        return null;
-    }
+    async Insert(model) { return null; }
+    async Update(model) { return null; }
 }
-
-export default StandardDAO;

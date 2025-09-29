@@ -2,7 +2,6 @@ import TemaService from "../Service/TemaService";
 import TemaModel from "../Model/TemaModel";
 
 export default class TemaController {
-
     #service;
 
     constructor() {
@@ -10,47 +9,39 @@ export default class TemaController {
     }
 
     async GetUnique(id) {
-    try {
-        return await this.#service.GetUnique(id);
-    } catch (error) {
-        console.error(error);
-        throw new Error("Não foi possível obter o tema");
+        try {
+            return await this.#service.GetUnique(id);
+        } catch (error) {
+            console.error(error);
+            throw new Error("Não foi possível obter o tema");
+        }
     }
-  }
 
-    async GetAll(){
-        try{
+    async GetAll() {
+        try {
             const dados = await this.#service.GetAll();
-
             console.log(dados.length);
-
-            return dados || [];
+            return dados;
         } catch (error) {
             console.error(error);
             throw new Error("Não foi possível obter os temas");
         }
     }
 
-    async Insert(name, Player, TimePlayed) {
+    async Insert(nome, Player) {
         try {
-            const model = new TemaModel("", name, Player, TimePlayed);
-
-            const result = await this.#service.Create(model);
-
-            return result;
+        const model = new TemaModel("", nome, Player, 0);
+        return await this.#service.Insert(model);
         } catch (error) {
-            console.error(error);
-            throw new Error("Não foi possível criar o tema");
+        console.error(error);
+        throw new Error("Não foi possível criar o tema");
         }
     }
 
-    async Update(id, name, Player, TimePlayed) {
+    async Update(id, nome, Player) {
         try {
-            const model = new TemaModel(id, name, Player, TimePlayed);
-
-            const result = await this.#service.Update(model);
-
-            return result;
+            const model = new TemaModel(id, nome, Player, 0);
+            return await this.#service.Update(model);
         } catch (error) {
             console.error(error);
             throw new Error("Não foi possível atualizar o tema");
@@ -59,8 +50,7 @@ export default class TemaController {
 
     async Delete(id) {
         try {
-            const result = await this.#service.Delete(id);
-            return result;
+            return await this.#service.Delete(id);
         } catch (error) {
             console.error(error);
             throw new Error("Não foi possível deletar o tema");
