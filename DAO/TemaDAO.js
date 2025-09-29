@@ -16,9 +16,6 @@ export class TemaDAO extends StandardDAO {
         const query = "insert into " + this.dbName + " (nome, Player, TimePlayed) VALUES (?, ?, ?)  ";
 
         const result = await connection.runAsync(query, [model.nome, model.Player, model.TimePlayed]);
-
-
-        await connection.closeAsync();
         
         return result.changes == 1;
     }

@@ -12,8 +12,17 @@ export class DbHelper {
         return await SQLite.openDatabaseAsync("quiz_db");
     }
 
+    // Deletar a tabela se existir
+    static async DropThemeTable() {
+        const query = `DROP TABLE IF EXISTS tbtema;`;
+        const connection = await this.GetConnection();
+        await connection.execAsync(query);
+        console.log("Tabela tbtema removida");
+    }
+
+
     // Cria a tabela de temas se não existir
-    static async ThemeDbStart() {
+    static async TemaDbStart() {
         const query = `
             CREATE TABLE IF NOT EXISTS tbtema (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,6 +37,7 @@ export class DbHelper {
 
     // Inicialização completa do DB
     static async startDb() {
-        await this.ThemeDbStart();
+        await DbHelper.DropThemeTable();
+        await this.TemaDbStart();
     }
 }

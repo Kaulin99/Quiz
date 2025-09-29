@@ -36,16 +36,25 @@ export default function CrudTema({ route, navigation }) {
             return;
         }
 
+        let status = false;
+
         if (!temaId || temaId === "") {
             // Insert
             console.log("Criando tema:", { temaId, nome, player, TimePlayed: 5 });
-            temaController.Insert(nome, player);
+            status = await temaController.Insert(nome, player);
         } else {
             // Update
             console.log("Atualizando tema:", { temaId, nome, player, TimePlayed: 10 });
-            temaController.Update(temaId, nome, player)
+            status = await temaController.Update(temaId, nome, player)
                 .then(() => navigation.goBack())
                 .catch(error => console.error("Erro ao atualizar tema:", error));
+        }
+
+        if (status === true) {
+        Alert.alert("Salvo com sucesso");
+        setNome('');
+        setPlayer('');
+        navigation.goBack();
         }
     };
 

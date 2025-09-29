@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, Button, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Button, FlatList, TouchableOpacity } from 'react-native';
 import TemaController from '../Controller/TemaController';
 import { useNavigation, useFocusEffect  } from '@react-navigation/native';
+import styles from '../Styles/HomeTema';
 
 // Crie a instância do controller fora do componente
 const temaController = new TemaController();
@@ -42,29 +43,20 @@ export default function HomeTema() {
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={styles.temaItem}>
-                        <Text style={styles.temaText}>{item.nome}</Text>
-                        <View style={styles.actions}>
-                            <TouchableOpacity onPress={() => navigation.navigate('CrudTema', { id: item.id })}>
-                                <Text style={styles.edit}>Editar</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => handleDelete(item.id)}>
-                                <Text style={styles.delete}>Apagar</Text>
-                            </TouchableOpacity>
-                        </View>
+                    <Text style={styles.temaTitle}>{item.nome}</Text>
+                    <Text style={styles.temaSubText}>Feito por: {item.Player}</Text>
+                    <Text style={styles.temaSubText}>Jogado {item.TimePlayed} vezes</Text>
+                    <View style={styles.actions}>
+                        <TouchableOpacity onPress={() => navigation.navigate('CrudTema', { id: item.id })}>
+                            <Text style={styles.edit}>Editar</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleDelete(item.id)}>
+                            <Text style={styles.delete}>Apagar</Text>
+                        </TouchableOpacity>
                     </View>
+                </View>
                 )}
             />
         </View>
     );
 }
-
-// Seus estilos permanecem os mesmos
-const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-    title: { fontSize: 20, fontWeight: 'bold', marginBottom: 16 },
-    temaItem: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
-    temaText: { fontSize: 16 },
-    actions: { flexDirection: 'row' },
-    edit: { color: 'blue', marginRight: 16 },
-    delete: { color: 'red' },
-});
