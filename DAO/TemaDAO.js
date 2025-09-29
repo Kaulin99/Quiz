@@ -7,24 +7,20 @@ export class TemaDAO extends StandardDAO {
         super("tbtema"); // garante que o DAO saiba o nome da tabela
     }
 
-    async Insert(model) {
-        const db = DbHelper.GetConnection();
+    async Insert(model){
+        
+        const connection = await DbHelper.GetConnection();
         console.log("Inserindo no banco, tabela:", this.dbName);
+        console.log(connection);
 
-        return new Promise((resolve, reject) => {
-            db.transaction(tx => {
-                tx.executeSql(
-                    `INSERT INTO ${this.dbName} (nome, Player, TimePlayed) VALUES (?, ?, ?)`,
-                    [model.nome, model.Player, model.TimePlayed],
-                    (_, result) => resolve(result.rowsAffected === 1),
-                    (_, error) => {
-                        console.error("Erro ao criar tema:", error);
-                        reject(error);
-                        return false;
-                    }
-                );
-            });
-        });
+        const query = "insert into " + this.dbName + " (nome, Player, TimePlayed) VALUES (?, ?, ?)  ";
+
+        const result = await connection.runAsync(query, [model.nome, model.Player, model.TimePlayed]);
+
+
+        await connection.closeAsync();
+        
+        return result.changes == 1;
     }
 
     async Update(model) {

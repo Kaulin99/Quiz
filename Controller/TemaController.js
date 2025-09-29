@@ -21,7 +21,7 @@ export default class TemaController {
         try {
             const dados = await this.#service.GetAll();
             console.log(dados.length);
-            return dados;
+            return dados || [];
         } catch (error) {
             console.error(error);
             throw new Error("Não foi possível obter os temas");
@@ -30,8 +30,9 @@ export default class TemaController {
 
     async Insert(nome, Player) {
         try {
-        const model = new TemaModel("", nome, Player, 0);
-        return await this.#service.Insert(model);
+            const model = new TemaModel("", nome, Player, 0);
+            await this.#service.Insert(model);
+            return true;
         } catch (error) {
         console.error(error);
         throw new Error("Não foi possível criar o tema");

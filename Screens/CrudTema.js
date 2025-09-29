@@ -25,7 +25,7 @@ export default function CrudTema({ route, navigation }) {
     }, [temaId]);
 
     // Função de salvar (Insert ou Update)
-    const handleSave = () => {
+    async function handleSave() {
         if (!nome.trim()) {
             Alert.alert("Erro", "O nome do tema não pode ficar vazio!");
             return;
@@ -36,20 +36,19 @@ export default function CrudTema({ route, navigation }) {
             return;
         }
 
-        if (temaId) {
+        if (!temaId || temaId === "") {
+            // Insert
+            console.log("Criando tema:", { temaId, nome, player, TimePlayed: 5 });
+            temaController.Insert(nome, player);
+        } else {
             // Update
-            console.log("Atualizando tema:", { id: temaId, nome, player, TimePlayed: 0 });
+            console.log("Atualizando tema:", { temaId, nome, player, TimePlayed: 10 });
             temaController.Update(temaId, nome, player)
                 .then(() => navigation.goBack())
                 .catch(error => console.error("Erro ao atualizar tema:", error));
-        } else {
-            // Insert
-            console.log("Criando tema:", { nome, player, TimePlayed: 0 });
-            temaController.Insert(nome, player)
-                .then(() => navigation.goBack())
-                .catch(error => console.error("Erro ao criar tema:", error));
         }
     };
+
 
     return (
         <View style={styles.container}>

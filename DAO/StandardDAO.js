@@ -57,6 +57,13 @@ export default class StandardDAO {
         });
     }
 
+    async GetAll(){
+        const connection = await DbHelper.GetConnection();
+        const registers = await connection.getAllAsync("SELECT * FROM " + this.dbName);
+        
+        return registers && registers.length > 0 ? registers : [];
+    }
+
     // Deletar registro
     async Delete(id) {
         const db = DbHelper.GetConnection();

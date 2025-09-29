@@ -1,23 +1,23 @@
 export default class TemaModel {
 
     #id;
-    #name;
+    #nome;
     #Player;
     #TimePlayed;
 
-    constructor(id ="", name="", Player = "", TimePlayed = 0) {
-        this.#id = id;
-        this.#name = name;
-        this.#Player = Player;
-        this.#TimePlayed = TimePlayed;
+    constructor(id, nome, Player, TimePlayed) {
+        this.id = id;
+        this.nome = nome;   
+        this.Player = Player;
+        this.TimePlayed = TimePlayed;
     }
     
     get id() {
         return this.#id;
     }
 
-    get name() {
-        return this.#name;
+    get nome() {
+        return this.#nome;
     }
 
     get Player() {
@@ -32,8 +32,8 @@ export default class TemaModel {
         this.#id = value;
     }
 
-    set name(value) {
-        this.#name = value;
+    set nome(value) {
+        this.#nome = value;
     }
 
     set Player(value) { 

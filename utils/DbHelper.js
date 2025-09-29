@@ -8,10 +8,8 @@ export class DbHelper {
 
     // Abre a conexão de forma assíncrona
     static async GetConnection() {
-        if (!this._db) {
-            this._db = await SQLite.openDatabaseAsync('quiz_db');
-        }
-        return this._db;
+        console.log("Abrindo conexão com o banco - " + new Date().toLocaleTimeString());
+        return await SQLite.openDatabaseAsync("quiz_db");
     }
 
     // Cria a tabela de temas se não existir
@@ -25,12 +23,7 @@ export class DbHelper {
             );
         `;
         const connection = await this.GetConnection();
-        try {
-            await connection.execAsync(query);
-            console.log("Tabela tbtema criada ou já existe.");
-        } catch (error) {
-            console.error("Erro ao criar a tabela tbtema:", error);
-        }
+        await connection.execAsync(query);
     }
 
     // Inicialização completa do DB

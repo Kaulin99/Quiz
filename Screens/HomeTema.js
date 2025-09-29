@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, Button, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import TemaController from '../Controller/TemaController';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect  } from '@react-navigation/native';
 
 // Crie a instância do controller fora do componente
 const temaController = new TemaController();
@@ -10,13 +10,19 @@ export default function HomeTema() {
     const [temas, setTemas] = useState([]);
     const navigation = useNavigation();
 
-    useEffect(() => {
-        // Use a instância para carregar os temas
-        temaController.GetAll().then(setTemas).catch(error => {
-            console.error("Erro ao buscar temas:", error);
-            // Opcional: mostrar um alerta de erro para o usuário
-        });
-    }, []);
+    async function RetriveThemes() {
+    const list = await temaController.GetAll();
+    setTemas(list ?? []);
+    }
+
+    useFocusEffect(
+    useCallback(() => {
+      async function fetchThemes() {
+        await RetriveThemes();
+      }
+      fetchThemes();
+    }, [])
+    );
 
     const handleDelete = (id) => {
         // Use a instância para deletar

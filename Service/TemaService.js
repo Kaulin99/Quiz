@@ -22,19 +22,25 @@ export default class TemaService {
   }
 
   async GetAll() {
-    const dados = await this.#dao.GetAll();
-    return dados.map(
-      (item) =>
-        new TemaModel(item.id, item.nome, item.Player, item.TimePlayed)
-    );
-  }
+    const registers = await this.#dao.GetAll();
+
+        let models = [];
+        
+        for(const item of registers){
+
+            const model = new TemaModel(item.id, item.nome, item.Player, item.TimePlayed);
+
+            models.push(model);
+
+        }     
+        return models;
+    }
 
   async Insert(model) {
     const result = await this.#dao.Insert(model);
     if (!result) throw new Error("Não foi possível criar o Temastico");
-    return result; // retorna id do novo tema
   }
-
+  
   async Update(model) {
     const result = await this.#dao.Update(model);
     if (!result) throw new Error("Não foi possível atualizar o teminha");
