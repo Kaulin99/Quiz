@@ -13,14 +13,19 @@ export default function CrudTema({ route, navigation }) {
     // Carrega dados do tema se houver id
     useEffect(() => {
         if (temaId) {
-            temaController.GetUnique(temaId)
-                .then(tema => {
-                    if (tema) {
-                        setNome(tema.nome);
-                        setPlayer(tema.Player);
+            (async () => {
+                try {
+                    const editor = await temaController.GetUnique(temaId);
+                    console.log("Editor retornado:", editor);
+
+                    if (editor) {
+                        setNome(editor.nome);   // cuidado com maiúscula/minúscula
+                        setPlayer(editor.Player);
                     }
-                })
-                .catch(error => console.error("Erro ao carregar tema:", error));
+                } catch (error) {
+                    console.error("Erro ao carregar tema:", error);
+                }
+            })();
         }
     }, [temaId]);
 
@@ -40,11 +45,11 @@ export default function CrudTema({ route, navigation }) {
 
         if (!temaId || temaId === "") {
             // Insert
-            console.log("Criando tema:", { temaId, nome, player, TimePlayed: 5 });
+            console.log("Criando tema:", { temaId, nome, player });
             status = await temaController.Insert(nome, player);
         } else {
             // Update
-            console.log("Atualizando tema:", { temaId, nome, player, TimePlayed: 10 });
+            console.log("Atualizando tema:", { temaId, nome, player });
             status = await temaController.Update(temaId, nome, player)
                 .then(() => navigation.goBack())
                 .catch(error => console.error("Erro ao atualizar tema:", error));

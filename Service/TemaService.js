@@ -15,7 +15,7 @@ export default class TemaService {
 
     return new TemaModel(
       register.id,
-      register.nome,   // banco retorna "nome"
+      register.nome,  
       register.Player,
       register.TimePlayed
     );
@@ -40,7 +40,7 @@ export default class TemaService {
     const result = await this.#dao.Insert(model);
     if (!result) throw new Error("Não foi possível criar o Temastico");
   }
-  
+
   async Update(model) {
     const result = await this.#dao.Update(model);
     if (!result) throw new Error("Não foi possível atualizar o teminha");

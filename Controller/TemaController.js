@@ -1,5 +1,6 @@
 import TemaService from "../Service/TemaService";
 import TemaModel from "../Model/TemaModel";
+import {DbHelper} from "../utils/DbHelper";
 
 export default class TemaController {
     #service;
@@ -9,12 +10,10 @@ export default class TemaController {
     }
 
     async GetUnique(id) {
-        try {
-            return await this.#service.GetUnique(id);
-        } catch (error) {
-            console.error(error);
-            throw new Error("Não foi possível obter o tema");
-        }
+        const connection = await DbHelper.GetConnection();
+        const query = "SELECT * FROM tbtema WHERE id = ?";
+        const result = await connection.getFirstAsync(query, [id]);
+        return result;
     }
 
     async GetAll() {

@@ -37,7 +37,6 @@ export class DbHelper {
 
     // Inicialização completa do DB
     static async startDb() {
-        await DbHelper.DropThemeTable();
         await this.TemaDbStart();
     }
 }
