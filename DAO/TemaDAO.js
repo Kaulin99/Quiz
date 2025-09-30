@@ -21,22 +21,13 @@ export class TemaDAO extends StandardDAO {
     }
 
     async Update(model) {
-        const db = DbHelper.GetConnection();
-        console.log("Atualizando no banco, tabela:", this.dbName);
+    const connection = await DbHelper.GetConnection();
+    const query = "UPDATE " + this.dbName + " SET nome = ?, Player = ? WHERE id = ?";
 
-        return new Promise((resolve, reject) => {
-            db.transaction(tx => {
-                tx.executeSql(
-                    `UPDATE ${this.dbName} SET nome = ?, Player = ? WHERE id = ?`,
-                    [model.nome, model.Player, model.id],
-                    (_, result) => resolve(result.rowsAffected === 1),
-                    (_, error) => {
-                        console.error("Erro ao atualizar tema:", error);
-                        reject(error);
-                        return false;
-                    }
-                );
-            });
-        });
+    const result = await connection.runAsync(query, [model.nome, model.Player, model.id]);
+
+    await connection.closeAsync();
+
+    return result.changes === 1;
     }
 }
