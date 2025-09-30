@@ -64,23 +64,11 @@ export default class StandardDAO {
         return registers && registers.length > 0 ? registers : [];
     }
 
-    // Deletar registro
-    async Delete(id) {
-        const db = DbHelper.GetConnection();
-        return new Promise((resolve, reject) => {
-            db.transaction(tx => {
-                tx.executeSql(
-                    `DELETE FROM ${this.dbName} WHERE id = ?`,
-                    [id],
-                    (_, result) => resolve(result.rowsAffected === 1),
-                    (_, error) => {
-                        console.error(`Erro ao deletar registro em ${this.dbName}:`, error);
-                        reject(false);
-                        return false;
-                    }
-                );
-            });
-        });
+    async Delete(Id){
+        const connection = await DbHelper.GetConnection();
+        const query = "DELETE FROM " + this.dbName + " WHERE id = ?";
+        const result = await connection.runAsync(query, [Id]); 
+        return result.changes === 1; 
     }
 
     async Insert(model) { return null; }
