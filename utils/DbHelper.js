@@ -1,7 +1,5 @@
 import * as SQLite from 'expo-sqlite';
 
-console.log("CARREGANDO DbHelper.js - " + new Date().toLocaleTimeString());
-
 export class DbHelper {
 
     static _db = null; // guarda a conexão do banco
@@ -14,7 +12,7 @@ export class DbHelper {
 
     // Deletar a tabela se existir
     static async DropThemeTable() {
-        const query = `DROP TABLE IF EXISTS tbtema;`;
+        const query = `DROP TABLE IF EXISTS tbPergunta;`;
         const connection = await this.GetConnection();
         await connection.execAsync(query);
         console.log("Tabela tbtema removida");
@@ -32,23 +30,25 @@ export class DbHelper {
             );
         `;
         const connection = await this.GetConnection();
+        console.log("Tabela tbtema criada ou já existe");
         await connection.execAsync(query);
     }
 
     static async PerguntasDbStart() {
         const query = `CREATE TABLE IF NOT EXISTS tbPergunta (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             temaId INTEGER NOT NULL,
             pergunta TEXT NOT NULL,
+            resposta TEXT NOT NULL,
             alternativa1 TEXT NOT NULL,
             alternativa2 TEXT NOT NULL,
             alternativa3 TEXT NOT NULL,
             alternativa4 TEXT NOT NULL,
-            resposta TEXT NOT NULL,
             FOREIGN KEY(temaId) REFERENCES tbTema(id)
         )`;
 
         const connection = await this.GetConnection();
+        console.log("Tabela tbPergunta criada ou já existe");
         await connection.execAsync(query);
     }
 

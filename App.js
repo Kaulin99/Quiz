@@ -7,9 +7,10 @@ import Home from './Screens/Home';
 import QuizSelection from './Screens/QuizSelection'; 
 import HomeTema from './Screens/HomeTema'; 
 import CrudTema from './Screens/CrudTema';
+import CrudPergunta from './Screens/CrudPergunta';
+import HomePergunta from './Screens/HomePergunta';
 
-console.log("CARREGANDO App.js - " + new Date().toLocaleTimeString());
-
+console.log("Abrindo conexão com o banco - " + new Date().toLocaleTimeString());
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -26,6 +27,8 @@ export default function App() {
         <Stack.Screen name="QuizSelection" component={QuizSelection}/>
         <Stack.Screen name="HomeTema" component={HomeTema}/>
         <Stack.Screen name="CrudTema" component={CrudTema}/>
+        <Stack.Screen name="CrudPergunta" component={CrudPergunta}/>
+        <Stack.Screen name="HomePergunta" component={HomePergunta}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

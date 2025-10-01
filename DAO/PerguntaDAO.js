@@ -30,8 +30,17 @@ export class PerguntaDAO extends StandardDAO{
     const result = await connection.runAsync(query, [model.temaId, model.perguntas, model.alternativa1, model.alternativa2, 
                                                      model.alternativa3, model.alternativa4, model.resposta, model.id]);
 
-    await connection.closeAsync();
+    //await connection.closeAsync();
 
     return result.changes === 1;
     }
+
+    async GetByTema(temaId) {
+    const connection = await DbHelper.GetConnection();
+    const query = "SELECT * FROM tbPergunta WHERE temaId = ?";
+    const result = await connection.getAllAsync(query, [temaId]);
+
+    return result;
+    }
+
 }

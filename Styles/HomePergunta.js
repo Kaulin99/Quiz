@@ -4,62 +4,52 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#f4f4f9",
+    backgroundColor: "#f9f9f9",
   },
   title: {
     fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 16,
     textAlign: "center",
+    marginBottom: 4,
     color: "#333",
   },
-  createButton: {
+  subTitle: {
+    fontSize: 18,
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#666",
+  },
+  addButton: {
     backgroundColor: "#4CAF50",
     padding: 12,
     borderRadius: 8,
-    marginBottom: 20,
     alignItems: "center",
+    marginBottom: 16,
   },
-  createButtonText: {
+  addButtonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
   },
-  temaItem: {
+  perguntaItem: {
     backgroundColor: "#fff",
-    padding: 16,
-    borderRadius: 10,
-    marginBottom: 12,
+    padding: 14,
+    borderRadius: 8,
+    marginBottom: 10,
     shadowColor: "#000",
     shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  temaTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#222",
-  },
-  temaSubText: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 4,
-  },
-  viewQuestionsButton: {
-    marginTop: 10,
-    backgroundColor: "#3f51b5",
-    padding: 10,
-    borderRadius: 6,
-    alignItems: "center",
-  },
-  viewQuestionsText: {
-    color: "#fff",
-    fontWeight: "bold",
+  perguntaText: {
+    fontSize: 16,
+    fontWeight: "500",
+    marginBottom: 8,
+    color: "#333",
   },
   actions: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 12,
   },
   editButton: {
     backgroundColor: "#FFC107",
@@ -78,5 +68,11 @@ export default StyleSheet.create({
   delete: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  empty: {
+    textAlign: "center",
+    fontSize: 16,
+    marginTop: 20,
+    color: "#999",
   },
 });

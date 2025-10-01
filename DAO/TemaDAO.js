@@ -26,8 +26,6 @@ export class TemaDAO extends StandardDAO {
 
     const result = await connection.runAsync(query, [model.nome, model.Player, model.id]);
 
-    await connection.closeAsync();
-
     return result.changes === 1;
     }
 }
