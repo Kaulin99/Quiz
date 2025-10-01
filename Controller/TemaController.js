@@ -40,6 +40,7 @@ export default class TemaController {
 
     async Update(id, nome, Player) {
         try {
+            console.log("Atualizando tema no controller:", { id, nome, Player });
             const model = new TemaModel(id, nome, Player, 0);
             return await this.#service.Update(model);
         } catch (error) {

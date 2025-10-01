@@ -3,23 +3,27 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { useEffect } from 'react';
 import { DbHelper } from './utils/DbHelper';
 
-import home from './Screens/Home'; 
-import quizSelection from './Screens/QuizSelection'; 
+import Home from './Screens/Home'; 
+import QuizSelection from './Screens/QuizSelection'; 
 import HomeTema from './Screens/HomeTema'; 
 import CrudTema from './Screens/CrudTema';
 
+console.log("CARREGANDO App.js - " + new Date().toLocaleTimeString());
+
 const Stack = createStackNavigator();
 
-export default function App(){
-  useEffect(()=> {
-    DbHelper.startDb();
-  }, [])
+export default function App() {
+  useEffect(() => {
+    DbHelper.startDb()
+      .then(() => console.log("Banco pronto!"))
+      .catch(err => console.error("Erro ao iniciar banco:", err));
+  }, []);
 
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={home}/>
-        <Stack.Screen name="QuizSelection" component={quizSelection}/>
+        <Stack.Screen name="Home" component={Home}/>
+        <Stack.Screen name="QuizSelection" component={QuizSelection}/>
         <Stack.Screen name="HomeTema" component={HomeTema}/>
         <Stack.Screen name="CrudTema" component={CrudTema}/>
       </Stack.Navigator>

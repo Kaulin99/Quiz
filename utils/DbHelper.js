@@ -35,8 +35,26 @@ export class DbHelper {
         await connection.execAsync(query);
     }
 
+    static async PerguntasDbStart() {
+        const query = `CREATE TABLE IF NOT EXISTS tbPergunta (
+            id INTEGER PRIMARY KEY,
+            temaId INTEGER NOT NULL,
+            pergunta TEXT NOT NULL,
+            alternativa1 TEXT NOT NULL,
+            alternativa2 TEXT NOT NULL,
+            alternativa3 TEXT NOT NULL,
+            alternativa4 TEXT NOT NULL,
+            resposta TEXT NOT NULL,
+            FOREIGN KEY(temaId) REFERENCES tbTema(id)
+        )`;
+
+        const connection = await this.GetConnection();
+        await connection.execAsync(query);
+    }
+
     // Inicialização completa do DB
     static async startDb() {
         await this.TemaDbStart();
+        await this.PerguntasDbStart();
     }
 }
