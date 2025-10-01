@@ -22,10 +22,9 @@ export class TemaDAO extends StandardDAO {
 
     async Update(model) {
     const connection = await DbHelper.GetConnection();
-    const query = "UPDATE " + this.dbName + " SET nome = ?, Player = ? WHERE id = ?";
+        const query = "UPDATE " + this.dbName + " SET nome = ?, Player = ?, TimePlayed = ? WHERE id = ?";
+        const result = await connection.runAsync(query, [model.nome, model.Player, model.TimePlayed, model.id]);
 
-    const result = await connection.runAsync(query, [model.nome, model.Player, model.id]);
-
-    return result.changes === 1;
+        return result.changes === 1;
     }
 }

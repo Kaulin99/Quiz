@@ -60,4 +60,17 @@ export default class TemaController {
             throw new Error("Não foi possível deletar o tema");
         }
     }
+
+    /**
+     * Solicita ao serviço que incremente o contador de vezes jogadas de um tema.
+     * @param {number} id O ID do tema.
+     */
+    async incrementTimePlayed(id) {
+        try {
+            return await this.#service.incrementTimePlayed(id);
+        } catch (error) {
+            console.error("Erro ao incrementar vezes jogadas:", error);
+            // Não lança erro para a UI, apenas loga.
+        }
+    }
 }

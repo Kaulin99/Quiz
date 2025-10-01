@@ -24,17 +24,36 @@ export default class TemaService {
   async GetAll() {
     const registers = await this.#dao.GetAll();
 
-        let models = [];
+    let models = [];
         
-        for(const item of registers){
+    for(const item of registers){
 
-            const model = new TemaModel(item.id, item.nome, item.Player, item.TimePlayed);
+      const model = new TemaModel(item.id, item.nome, item.Player, item.TimePlayed);
 
-            models.push(model);
+      models.push(model);
 
-        }     
-        return models;
+    }     
+    return models;
+  }
+
+  /**
+     * Busca um tema pelo ID, incrementa o contador TimePlayed e salva no banco.
+     * @param {number} id O ID do tema a ser atualizado.
+     */
+    async incrementTimePlayed(id) {
+        // 1. Busca o tema completo no banco de dados
+        const tema = await this.GetUnique(id);
+        if (!tema) {
+            throw new Error("Tema não encontrado para incrementar o contador.");
+        }
+
+        // 2. Incrementa o contador
+        tema.TimePlayed += 1;
+
+        // 3. Salva o tema atualizado de volta no banco
+        return await this.Update(tema);
     }
+
 
   async Insert(model) {
     const result = await this.#dao.Insert(model);
