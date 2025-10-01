@@ -79,9 +79,8 @@ export default function QuizSelection({ navigation }) {
 
             // Vai para a tela do jogo passando as perguntas
             navigation.navigate('GameScreen', { 
-                temaId: selectedTema.id, 
-                temaNome: selectedTema.nome,
-                perguntas: perguntasSelecionadas 
+                perguntas: perguntasSelecionadas , 
+                temaNome: selectedTema.nome
             });
 
         } catch (error) {

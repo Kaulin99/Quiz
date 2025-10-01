@@ -1,37 +1,75 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, StatusBar, ActivityIndicator } from 'react-native';
 
-// Removi useRoute e useNavigation para mostrar como pegar dos props, que é mais comum
-// Mas usar os hooks como você fez também está correto.
 export default function GameScreen({ route, navigation }) {
-    // Pega os parâmetros passados pela tela anterior
-    const { perguntas, temaNome } = route.params;
+    // Validação 1: Verificar se route.params existe
+    if (!route || !route.params) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>Erro: Dados não encontrados</Text>
+                <TouchableOpacity 
+                    style={styles.backButton}
+                    onPress={() => navigation.goBack()}
+                >
+                    <Text style={styles.backButtonText}>← Voltar</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
 
-    // Estado para controlar qual pergunta está sendo exibida
+    const { perguntas, temaNome, temaId } = route.params;
+
+    // Validação 2: Verificar se perguntas existe e não está vazia
+    if (!perguntas || !Array.isArray(perguntas) || perguntas.length === 0) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>❌ Nenhuma pergunta disponível</Text>
+                <TouchableOpacity 
+                    style={styles.backButton}
+                    onPress={() => navigation.goBack()}
+                >
+                    <Text style={styles.backButtonText}>← Voltar</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
     const [currentIndex, setCurrentIndex] = useState(0);
-    // NOVO ESTADO: Um objeto para armazenar as respostas do usuário { perguntaId: respostaId }
     const [respostasUsuario, setRespostasUsuario] = useState({});
 
     const currentPergunta = perguntas[currentIndex];
 
-    // Embaralha as alternativas da pergunta atual para que a resposta correta não fique sempre no mesmo lugar.
-    // `useMemo` garante que o embaralhamento só aconteça quando a pergunta mudar.
+    // Validação 3: Verificar se a pergunta atual existe e tem alternativas
+    if (!currentPergunta || !currentPergunta.alternativas || !Array.isArray(currentPergunta.alternativas)) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>⚠️ Erro ao carregar pergunta</Text>
+                <Text style={styles.errorSubtext}>
+                    Pergunta {currentIndex + 1} está com dados incompletos
+                </Text>
+                <TouchableOpacity 
+                    style={styles.backButton}
+                    onPress={() => navigation.goBack()}
+                >
+                    <Text style={styles.backButtonText}>← Voltar</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
+    // Embaralha as alternativas
     const alternativasEmbaralhadas = useMemo(
-        () => [...currentPergunta.alternativas].sort(() => Math.random() - 0.5),
+        () => {
+            if (!currentPergunta.alternativas || currentPergunta.alternativas.length === 0) {
+                return [];
+            }
+            return [...currentPergunta.alternativas].sort(() => Math.random() - 0.5);
+        },
         [currentPergunta]
     );
 
-    // Função chamada quando o quiz termina
-    const finalizarQuiz = () => {
-        navigation.replace('GameResultScreen', {
-            perguntas: perguntas, // A lista de perguntas original
-            respostasUsuario: respostasUsuario // O objeto com as respostas do usuário
-        });
-    };
-
     // Função chamada quando o usuário seleciona uma alternativa
     const handleAnswer = (alternativaId) => {
-        // Salva a resposta do usuário para a pergunta atual
         const novasRespostas = {
             ...respostasUsuario,
             [currentPergunta.id]: alternativaId
@@ -45,7 +83,9 @@ export default function GameScreen({ route, navigation }) {
             // Se for a última pergunta, navega para a tela de resultados
             navigation.replace('GameResultScreen', {
                 perguntas: perguntas,
-                respostasUsuario: novasRespostas // Usa as respostas atualizadas
+                respostasUsuario: novasRespostas,
+                temaId: temaId,
+                temaNome: temaNome
             });
         }
     };
@@ -53,10 +93,20 @@ export default function GameScreen({ route, navigation }) {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="dark-content" />
-            <Text style={styles.title}>🎯 {temaNome}</Text>
+            <Text style={styles.title}>🎯 {temaNome || 'Quiz'}</Text>
             <Text style={styles.counter}>
                 Pergunta {currentIndex + 1} de {perguntas.length}
             </Text>
+
+            {/* Barra de progresso */}
+            <View style={styles.progressBarContainer}>
+                <View 
+                    style={[
+                        styles.progressBarFill, 
+                        { width: `${((currentIndex + 1) / perguntas.length) * 100}%` }
+                    ]} 
+                />
+            </View>
 
             <View style={styles.questionBox}>
                 <Text style={styles.questionText}>{currentPergunta.pergunta}</Text>
@@ -64,27 +114,63 @@ export default function GameScreen({ route, navigation }) {
 
             {/* Renderiza a lista de alternativas embaralhadas */}
             <View style={styles.alternativesContainer}>
-                {alternativasEmbaralhadas.map((alternativa) => (
-                    <TouchableOpacity
-                        key={alternativa.id}
-                        style={styles.alternativeButton}
-                        onPress={() => handleAnswer(alternativa.id)}
-                    >
-                        <Text style={styles.alternativeText}>{alternativa.texto}</Text>
-                    </TouchableOpacity>
-                ))}
+                {alternativasEmbaralhadas.length > 0 ? (
+                    alternativasEmbaralhadas.map((alternativa) => (
+                        <TouchableOpacity
+                            key={alternativa.id}
+                            style={styles.alternativeButton}
+                            onPress={() => handleAnswer(alternativa.id)}
+                            activeOpacity={0.7}
+                        >
+                            <Text style={styles.alternativeText}>{alternativa.texto}</Text>
+                        </TouchableOpacity>
+                    ))
+                ) : (
+                    <Text style={styles.errorText}>Nenhuma alternativa disponível</Text>
+                )}
             </View>
         </View>
     );
 }
 
-// ESTILOS NOVOS E MELHORADOS
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
         padding: 20,
         justifyContent: 'center',
+    },
+    errorContainer: {
+        flex: 1,
+        backgroundColor: '#f5f5f5',
+        padding: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    errorText: {
+        fontSize: 18,
+        color: '#d9534f',
+        textAlign: 'center',
+        marginBottom: 10,
+        fontWeight: '600',
+    },
+    errorSubtext: {
+        fontSize: 14,
+        color: '#666',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    backButton: {
+        backgroundColor: '#6C63FF',
+        paddingVertical: 12,
+        paddingHorizontal: 30,
+        borderRadius: 10,
+        marginTop: 20,
+    },
+    backButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
     },
     title: {
         fontSize: 24,
@@ -97,7 +183,19 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         color: '#666',
+        marginBottom: 10,
+    },
+    progressBarContainer: {
+        height: 8,
+        backgroundColor: '#e0e0e0',
+        borderRadius: 4,
+        overflow: 'hidden',
         marginBottom: 20,
+    },
+    progressBarFill: {
+        height: '100%',
+        backgroundColor: '#6C63FF',
+        borderRadius: 4,
     },
     questionBox: {
         padding: 25,
