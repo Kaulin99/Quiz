@@ -9,6 +9,7 @@ import HomeTema from './Screens/HomeTema';
 import CrudTema from './Screens/CrudTema';
 import HomePergunta from './Screens/HomePergunta';
 import CrudPergunta from './Screens/CrudPerguntas';
+import GameScreen from './Screens/GameScreen';
 
 
 console.log("CARREGANDO App.js - " + new Date().toLocaleTimeString());
@@ -31,6 +32,7 @@ export default function App() {
         <Stack.Screen name="CrudTema" component={CrudTema}/>
         <Stack.Screen name="HomePergunta" component={HomePergunta}/>
         <Stack.Screen name="CrudPergunta" component={CrudPergunta}/>
+        <Stack.Screen name="GameScreen" component={GameScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

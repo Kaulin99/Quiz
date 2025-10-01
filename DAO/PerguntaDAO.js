@@ -32,4 +32,16 @@ export class PerguntaDAO extends StandardDAO{
 
         return result.changes === 1;
     }
+
+    async GetByTema(temaId) {
+        try {
+            const connection = await DbHelper.GetConnection();
+            const query = `SELECT * FROM ${this.dbName} WHERE temaId = ?`;
+            const results = await connection.getAllAsync(query, [temaId]);
+            return results || [];
+        } catch (error) {
+            console.error(`Erro ao buscar perguntas por tema ${temaId}:`, error);
+            throw error;
+        }
+    }
 }

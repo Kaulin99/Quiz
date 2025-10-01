@@ -27,6 +27,27 @@ export default class PerguntaService{
         );
     }
 
+    async GetByTema(temaId) {
+        try {
+            const registros = await this.#dao.GetByTema(temaId);
+            return registros.map(register => new PerguntaModel(
+                register.id,
+                register.temaId,
+                register.pergunta,
+                register.resposta,
+                register.alternativa1,
+                register.alternativa2,
+                register.alternativa3,
+                register.alternativa4
+            ));
+        } catch (error) {
+            console.error(error);
+            throw new Error("Erro ao buscar perguntas do tema no service");
+        }
+    }
+
+
+
     async GetAll(){
         const registers = await this.#dao.GetAll();
         let models = [];

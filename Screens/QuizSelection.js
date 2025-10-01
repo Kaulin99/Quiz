@@ -9,13 +9,13 @@ import { FontAwesome } from '@expo/vector-icons';
 const temaController = new TemaController();
 const perguntaController = new PerguntaController();
 
-
 export default function QuizSelection({ navigation }) {
     const [temasComPerguntas, setTemasComPerguntas] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedTema, setSelectedTema] = useState(null);
     const [numPerguntas, setNumPerguntas] = useState('');
 
+    // Carrega todos os temas + contagem de perguntas
     const fetchData = async () => {
         try {
             const todosOsTemas = await temaController.GetAll();
@@ -53,9 +53,9 @@ export default function QuizSelection({ navigation }) {
         setNumPerguntas('');
     };
 
-    const handleStartGame = () => {
+    const handleStartGame = async () => {
         const num = parseInt(numPerguntas, 10);
-        
+
         if (!num || num <= 0) {
             Alert.alert("Entrada Inválida", "Por favor, insira um número de perguntas válido.");
             return;
@@ -66,9 +66,28 @@ export default function QuizSelection({ navigation }) {
             return;
         }
 
-        Alert.alert("Tudo pronto!", `Iniciando jogo do tema "${selectedTema.nome}" com ${num} perguntas.`);
-        setModalVisible(false);
-        // navigation.navigate('GameScreen', { temaId: selectedTema.id, numPerguntas: num });
+        try {
+            // Busca todas as perguntas do tema selecionado
+            const todasPerguntas = await perguntaController.GetByTema(selectedTema.id);
+
+            // Embaralha as perguntas e pega apenas a quantidade escolhida
+            const perguntasSelecionadas = todasPerguntas
+                .sort(() => Math.random() - 0.5) // shuffle
+                .slice(0, num);
+
+            setModalVisible(false);
+
+            // Vai para a tela do jogo passando as perguntas
+            navigation.navigate('GameScreen', { 
+                temaId: selectedTema.id, 
+                temaNome: selectedTema.nome,
+                perguntas: perguntasSelecionadas 
+            });
+
+        } catch (error) {
+            console.error("Erro ao iniciar jogo:", error);
+            Alert.alert("Erro", "Não foi possível iniciar o jogo.");
+        }
     };
 
     const renderTemaCard = ({ item }) => (
@@ -89,7 +108,7 @@ export default function QuizSelection({ navigation }) {
         <View style={styles.container}>
             <StatusBar barStyle="dark-content" />
             <Text style={styles.title}>Selecione um Tema para Jogar</Text>
-            
+
             <FlatList
                 data={temasComPerguntas}
                 keyExtractor={item => item.id.toString()}
@@ -109,10 +128,10 @@ export default function QuizSelection({ navigation }) {
                         <Text style={styles.modalSubtitle}>
                             Tema "{selectedTema?.nome}" tem {selectedTema?.questionCount} perguntas disponíveis.
                         </Text>
-                        
+
                         <TextInput
                             style={styles.input}
-                            placeholder="Ex: 5"
+                            placeholder="Ex: 1"
                             keyboardType="number-pad"
                             value={numPerguntas}
                             onChangeText={setNumPerguntas}

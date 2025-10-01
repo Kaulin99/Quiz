@@ -18,6 +18,16 @@ export default class PerguntaController{
         }
     }
 
+    async GetByTema(temaId) {
+        try {
+            return await this.#service.GetByTema(temaId);
+        } catch (error) {
+            console.error(error);
+            throw new Error("Não foi possível obter as perguntas do tema");
+        }
+    }
+
+
     async GetAll(){
         try{
             const dados = await this.#service.GetAll();
