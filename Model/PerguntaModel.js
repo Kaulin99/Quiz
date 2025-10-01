@@ -10,17 +10,16 @@ export default class PerguntaModel {
     #alternativa4;
 
     constructor(id, temaId, pergunta, resposta, alternativa1, alternativa2, alternativa3, alternativa4) {
-        this.id = id;
-        this.temaId = temaId;   
-        this.pergunta = pergunta;
-        this.resposta = resposta;
-        this.alternativa1 = alternativa1;
-        this.alternativa2 = alternativa2;
-        this.alternativa3 = alternativa3;
-        this.alternativa4 = alternativa4;
+        this.#id = id;
+        this.#temaId = temaId;   
+        this.#pergunta = pergunta;
+        this.#resposta = resposta;
+        this.#alternativa1 = alternativa1;
+        this.#alternativa2 = alternativa2;
+        this.#alternativa3 = alternativa3;
+        this.#alternativa4 = alternativa4;
     }
     
-    //---------------------------------GETTERS---------------------------------//
     get id() {
         return this.#id;
     }
@@ -53,7 +52,6 @@ export default class PerguntaModel {
         return this.#alternativa4;
     }
 
-     //---------------------------------SETTERS---------------------------------//
     set id(value) {
         this.#id = value;
     }

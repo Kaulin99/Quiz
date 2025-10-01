@@ -6,10 +6,10 @@ export default class TemaModel {
     #TimePlayed;
 
     constructor(id, nome, Player, TimePlayed) {
-        this.id = id;
-        this.nome = nome;   
-        this.Player = Player;
-        this.TimePlayed = TimePlayed;
+        this.#id = id;
+        this.#nome = nome;   
+        this.#Player = Player;
+        this.#TimePlayed = TimePlayed;
     }
     
     get id() {

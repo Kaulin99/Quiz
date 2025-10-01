@@ -10,10 +10,13 @@ export default class TemaController {
     }
 
     async GetUnique(id) {
-        const connection = await DbHelper.GetConnection();
-        const query = "SELECT * FROM tbtema WHERE id = ?";
-        const result = await connection.getFirstAsync(query, [id]);
-        return result;
+        try {
+            // Agora ele usa o Service, assim como os outros métodos
+            return await this.#service.GetUnique(id);
+        } catch (error) {
+            console.error(error);
+            throw new Error("Não foi possível obter o tema");
+        }
     }
 
     async GetAll() {

@@ -11,57 +11,22 @@ export default class StandardDAO {
         }
     }
 
-    // Buscar um registro único
     async GetUnique(id) {
-        const db = DbHelper.GetConnection();
-        return new Promise((resolve, reject) => {
-            db.transaction(tx => {
-                tx.executeSql(
-                    `SELECT * FROM ${this.dbName} WHERE id = ?`,
-                    [id],
-                    (_, { rows }) => {
-                        resolve(rows.length > 0 ? rows.item(0) : null);
-                    },
-                    (_, error) => {
-                        console.error(`Erro ao buscar registro em ${this.dbName}:`, error);
-                        reject(error);
-                        return false;
-                    }
-                );
-            });
-        });
-    }
-
-    // Buscar todos os registros
-    async GetAll() {
-        const db = DbHelper.GetConnection();
-        return new Promise((resolve, reject) => {
-            db.transaction(tx => {
-                tx.executeSql(
-                    `SELECT * FROM ${this.dbName}`,
-                    [],
-                    (_, { rows }) => {
-                        const result = [];
-                        for (let i = 0; i < rows.length; i++) {
-                            result.push(rows.item(i));
-                        }
-                        resolve(result);
-                    },
-                    (_, error) => {
-                        console.error(`Erro ao buscar todos os registros em ${this.dbName}:`, error);
-                        reject(error);
-                        return false;
-                    }
-                );
-            });
-        });
+        try {
+            const connection = await DbHelper.GetConnection();
+            const query = `SELECT * FROM ${this.dbName} WHERE id = ?`;
+            const result = await connection.getFirstAsync(query, [id]);
+            return result || null;
+        } catch (error) {
+            console.error(`Erro ao buscar registro único em ${this.dbName}:`, error);
+            throw error;
+        }
     }
 
     async GetAll(){
         const connection = await DbHelper.GetConnection();
         const registers = await connection.getAllAsync("SELECT * FROM " + this.dbName);
-        
-        return registers && registers.length > 0 ? registers : [];
+        return registers ?? [];
     }
 
     async Delete(Id){
@@ -70,7 +35,12 @@ export default class StandardDAO {
         const result = await connection.runAsync(query, [Id]); 
         return result.changes === 1; 
     }
+    
+    async Insert(model) { 
+        throw new Error("Método Insert não implementado no DAO filho.");
+    }
 
-    async Insert(model) { return null; }
-    async Update(model) { return null; }
+    async Update(model) {
+        throw new Error("Método Update não implementado no DAO filho.");
+    }
 }
