@@ -9,6 +9,7 @@ import { FontAwesome } from '@expo/vector-icons';
 const temaController = new TemaController();
 const perguntaController = new PerguntaController();
 
+
 export default function QuizSelection({ navigation }) {
     const [temasComPerguntas, setTemasComPerguntas] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
