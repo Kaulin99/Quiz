@@ -3,19 +3,21 @@ import { View, Text, FlatList, TouchableOpacity, Modal, TextInput, Button, Alert
 import { useFocusEffect } from '@react-navigation/native';
 import TemaController from '../Controller/TemaController';
 import PerguntaController from '../Controller/PerguntaController';
+import QuizController from '../Controller/QuizController'; // 1. IMPORTE O QUIZ CONTROLLER
 import styles from '../Styles/QuizSelection';
 import { FontAwesome } from '@expo/vector-icons';
 
 const temaController = new TemaController();
 const perguntaController = new PerguntaController();
+const quizController = new QuizController(); // 2. CRIE A INSTÂNCIA DO QUIZ CONTROLLER
 
 export default function QuizSelection({ navigation }) {
+    // ... (os states e a função fetchData continuam iguais)
     const [temasComPerguntas, setTemasComPerguntas] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedTema, setSelectedTema] = useState(null);
     const [numPerguntas, setNumPerguntas] = useState('');
 
-    // Carrega todos os temas + contagem de perguntas
     const fetchData = async () => {
         try {
             const todosOsTemas = await temaController.GetAll();
@@ -38,11 +40,7 @@ export default function QuizSelection({ navigation }) {
             Alert.alert("Erro", "Não foi possível carregar os temas.");
         }
     };
-
-    useFocusEffect(useCallback(() => {
-        fetchData();
-    }, []));
-
+    useFocusEffect(useCallback(() => { fetchData(); }, []));
     const handleOpenModal = (tema) => {
         if (tema.questionCount === 0) {
             Alert.alert("Aviso", "Este tema ainda não possui perguntas cadastradas.");
@@ -52,7 +50,8 @@ export default function QuizSelection({ navigation }) {
         setModalVisible(true);
         setNumPerguntas('');
     };
-
+    
+    // 3. --- FUNÇÃO handleStartGame COMPLETAMENTE ATUALIZADA ---
     const handleStartGame = async () => {
         const num = parseInt(numPerguntas, 10);
 
@@ -67,28 +66,25 @@ export default function QuizSelection({ navigation }) {
         }
 
         try {
-            // Busca todas as perguntas do tema selecionado
-            const todasPerguntas = await perguntaController.GetByTema(selectedTema.id);
-
-            // Embaralha as perguntas e pega apenas a quantidade escolhida
-            const perguntasSelecionadas = todasPerguntas
-                .sort(() => Math.random() - 0.5) // shuffle
-                .slice(0, num);
+            // Usa o QuizController para preparar as perguntas do jogo
+            const perguntasDoJogo = await quizController.startNewQuiz(selectedTema.id, num);
 
             setModalVisible(false);
 
-            // Vai para a tela do jogo passando as perguntas
+            // Navega para a tela do jogo passando os dados corretos
             navigation.navigate('GameScreen', { 
-                perguntas: perguntasSelecionadas , 
-                temaNome: selectedTema.nome
+                perguntas: perguntasDoJogo, 
+                temaNome: selectedTema.nome,
+                temaId: selectedTema.id // Passando o temaId também
             });
 
         } catch (error) {
             console.error("Erro ao iniciar jogo:", error);
-            Alert.alert("Erro", "Não foi possível iniciar o jogo.");
+            Alert.alert("Erro", "Não foi possível iniciar o jogo. " + error.message);
         }
     };
 
+    // ... (o resto do seu componente: renderTemaCard e o return JSX continuam iguais)
     const renderTemaCard = ({ item }) => (
         <View style={styles.card}>
             <View>
