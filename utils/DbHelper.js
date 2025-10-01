@@ -6,8 +6,21 @@ export class DbHelper {
 
     // Abre a conexão de forma assíncrona
     static async GetConnection() {
-        console.log("Abrindo conexão com o banco - " + new Date().toLocaleTimeString());
-        return await SQLite.openDatabaseAsync("quiz_db");
+        // 1. Verifica se a conexão já existe
+        if (this._db !== null) {
+            // Se já existir, retorna a conexão guardada sem abrir uma nova
+            return this._db;
+        }
+
+        // 2. Se não existir, abre uma nova conexão
+        console.log("Abrindo conexão com o banco PELA PRIMEIRA VEZ - " + new Date().toLocaleTimeString());
+        const connection = await SQLite.openDatabaseAsync("quiz_db");
+
+        // 3. Guarda a conexão na variável estática para as próximas chamadas
+        this._db = connection;
+        
+        // 4. Retorna a conexão recém-criada
+        return this._db;
     }
 
     // Deletar a tabela se existir
