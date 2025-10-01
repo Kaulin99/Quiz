@@ -3,10 +3,9 @@ import { View, Text, FlatList, TouchableOpacity, Modal, TextInput, Button, Alert
 import { useFocusEffect } from '@react-navigation/native';
 import TemaController from '../Controller/TemaController';
 import PerguntaController from '../Controller/PerguntaController';
-import styles from '../Styles/QuizSelection'; // Usando um novo arquivo de estilos
+import styles from '../Styles/QuizSelection';
 import { FontAwesome } from '@expo/vector-icons';
 
-// Instanciar controllers fora do componente para melhor performance
 const temaController = new TemaController();
 const perguntaController = new PerguntaController();
 
@@ -16,16 +15,20 @@ export default function QuizSelection({ navigation }) {
     const [selectedTema, setSelectedTema] = useState(null);
     const [numPerguntas, setNumPerguntas] = useState('');
 
-    // Função para buscar temas e contar as perguntas de cada um
     const fetchData = async () => {
         try {
             const todosOsTemas = await temaController.GetAll();
             const todasAsPerguntas = await perguntaController.GetAll();
 
-            // Mapeia os temas e adiciona a contagem de perguntas
             const temasMapeados = todosOsTemas.map(tema => {
                 const count = todasAsPerguntas.filter(p => p.temaId === tema.id).length;
-                return { ...tema, questionCount: count };
+                return {
+                    id: tema.id,
+                    nome: tema.nome,
+                    Player: tema.Player,
+                    TimePlayed: tema.TimePlayed,
+                    questionCount: count
+                };
             });
 
             setTemasComPerguntas(temasMapeados);
@@ -35,12 +38,10 @@ export default function QuizSelection({ navigation }) {
         }
     };
 
-    // Recarrega os dados sempre que a tela recebe foco
     useFocusEffect(useCallback(() => {
         fetchData();
     }, []));
 
-    // Abre a modal com os dados do tema selecionado
     const handleOpenModal = (tema) => {
         if (tema.questionCount === 0) {
             Alert.alert("Aviso", "Este tema ainda não possui perguntas cadastradas.");
@@ -48,10 +49,9 @@ export default function QuizSelection({ navigation }) {
         }
         setSelectedTema(tema);
         setModalVisible(true);
-        setNumPerguntas(''); // Limpa o input anterior
+        setNumPerguntas('');
     };
 
-    // Valida e inicia o jogo
     const handleStartGame = () => {
         const num = parseInt(numPerguntas, 10);
         
@@ -65,10 +65,8 @@ export default function QuizSelection({ navigation }) {
             return;
         }
 
-        // Lógica para iniciar o jogo (a ser implementada)
         Alert.alert("Tudo pronto!", `Iniciando jogo do tema "${selectedTema.nome}" com ${num} perguntas.`);
         setModalVisible(false);
-        // Aqui você navegaria para a tela do jogo, ex:
         // navigation.navigate('GameScreen', { temaId: selectedTema.id, numPerguntas: num });
     };
 
@@ -98,7 +96,6 @@ export default function QuizSelection({ navigation }) {
                 ListEmptyComponent={<Text style={styles.emptyText}>Nenhum tema disponível.</Text>}
             />
 
-            {/* Modal para seleção de perguntas */}
             <Modal
                 animationType="slide"
                 transparent={true}
