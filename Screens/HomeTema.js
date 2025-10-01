@@ -58,11 +58,15 @@ export default function HomeTema() {
             <TouchableOpacity
               style={styles.viewQuestionsButton}
               onPress={() =>
-                navigation.navigate('HomePergunta')
+                navigation.navigate("HomePergunta", {
+                  temaId: item.id,      
+                  temaNome: item.nome,   
+                })
               }
             >
-              <Text style={styles.viewQuestionsText}>Ver Perguntas</Text>
-            </TouchableOpacity>
+            <Text style={styles.viewQuestionsText}>Ver Perguntas</Text>
+          </TouchableOpacity>
+
 
             <View style={styles.actions}>
               <TouchableOpacity

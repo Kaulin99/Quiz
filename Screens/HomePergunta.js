@@ -14,21 +14,33 @@ export default function HomePergunta() {
 
   const [perguntas, setPerguntas] = useState([]);
 
-  // Carrega perguntas do tema
-  const loadPerguntas = useCallback(async () => {
-    if (!temaId) {
-      console.warn("temaId não definido! Verifique a navegação.");
-      return;
-    }
-    try {
-      const list = await perguntaController.GetByTema(temaId);
-      setPerguntas(list ?? []);
-    } catch (error) {
-      console.error("Erro ao carregar perguntas:", error);
-    }
-  }, [temaId]);
+  // Carrega perguntas do tema (corrigido para não retornar Promise direto)
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
 
-  useFocusEffect(loadPerguntas);
+      async function loadPerguntas() {
+        if (!temaId) {
+          console.warn("temaId não definido! Verifique a navegação.");
+          return;
+        }
+        try {
+          const list = await perguntaController.GetByTema(temaId);
+          if (isActive) {
+            setPerguntas(list ?? []);
+          }
+        } catch (error) {
+          console.error("Erro ao carregar perguntas:", error);
+        }
+      }
+
+      loadPerguntas();
+
+      return () => {
+        isActive = false; // cleanup para evitar setState após unmount
+      };
+    }, [temaId])
+  );
 
   const handleDelete = async (id) => {
     try {
