@@ -10,6 +10,7 @@ import CrudTema from './Screens/CrudTema';
 import HomePergunta from './Screens/HomePergunta';
 import CrudPergunta from './Screens/CrudPerguntas';
 
+
 console.log("CARREGANDO App.js - " + new Date().toLocaleTimeString());
 
 const Stack = createStackNavigator();
