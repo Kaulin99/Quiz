@@ -55,6 +55,21 @@ export default function CrudPergunta({ route, navigation }) {
             return;
         }
 
+        const alternativas = [
+            alternativa1.trim(),
+            alternativa2.trim(),
+            alternativa3.trim(),
+            alternativa4.trim()
+        ];
+
+        if (!alternativas.includes(resposta.trim())) {
+            Alert.alert(
+                "Erro de Validação", 
+                "A resposta correta deve ser exatamente igual a uma das alternativas fornecidas."
+            );
+            return; // Impede o salvamento
+        }
+
         let status = false;
         if (!perguntaId) {
             // Insert
