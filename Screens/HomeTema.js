@@ -47,6 +47,9 @@ export default function HomeTema() {
                     <Text style={styles.temaSubText}>Feito por: {item.Player}</Text>
                     <Text style={styles.temaSubText}>Jogado {item.TimePlayed} vezes</Text>
                     <View style={styles.actions}>
+                        <TouchableOpacity onPress={() => navigation.navigate('HomePergunta', { tema: item })}>
+                            <Text style={styles.viewQuestionsText}>Ver Perguntas</Text>
+                        </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigation.navigate('CrudTema', { id: item.id })}>
                             <Text style={styles.edit}>Editar</Text>
                         </TouchableOpacity>

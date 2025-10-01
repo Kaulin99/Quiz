@@ -20,7 +20,6 @@ export default class PerguntaModel {
         this.alternativa4 = alternativa4;
     }
     
-    //---------------------------------GETTERS---------------------------------//
     get id() {
         return this.#id;
     }
@@ -53,7 +52,6 @@ export default class PerguntaModel {
         return this.#alternativa4;
     }
 
-     //---------------------------------SETTERS---------------------------------//
     set id(value) {
         this.#id = value;
     }

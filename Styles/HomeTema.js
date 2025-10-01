@@ -38,7 +38,13 @@ const styles = StyleSheet.create({
     actions: { 
         flexDirection: 'row', 
         justifyContent: 'flex-end', 
-        marginTop: 8 
+        marginTop: 12, 
+    },
+
+    viewQuestionsText: { 
+        color: '#28a745',    
+        marginRight: 16, 
+        fontWeight: '600' 
     },
     edit: { 
         color: '#007bff', 

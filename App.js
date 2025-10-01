@@ -7,6 +7,8 @@ import Home from './Screens/Home';
 import QuizSelection from './Screens/QuizSelection'; 
 import HomeTema from './Screens/HomeTema'; 
 import CrudTema from './Screens/CrudTema';
+import HomePergunta from './Screens/HomePergunta';
+import CrudPergunta from './Screens/CrudPerguntas';
 
 console.log("CARREGANDO App.js - " + new Date().toLocaleTimeString());
 
@@ -26,6 +28,8 @@ export default function App() {
         <Stack.Screen name="QuizSelection" component={QuizSelection}/>
         <Stack.Screen name="HomeTema" component={HomeTema}/>
         <Stack.Screen name="CrudTema" component={CrudTema}/>
+        <Stack.Screen name="HomePergunta" component={HomePergunta}/>
+        <Stack.Screen name="CrudPergunta" component={CrudPergunta}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
