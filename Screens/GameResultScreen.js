@@ -17,7 +17,7 @@ export default function GameResultScreen({ route, navigation }) {
             console.log(`Incrementando contador para o tema ID: ${temaId}`);
             temaController.incrementTimePlayed(temaId);
         }
-    }, [temaId]); // O array [temaId] garante que o efeito só rode se o temaId existir
+    }, [temaId]); // O array [temaId] garante que o efeito só rode se o temaId existi
 
     // 2. Calcula a pontuação. useMemo otimiza para que o cálculo só aconteça uma vez.
     const { acertos, totalPerguntas, porcentagem } = useMemo(() => {
@@ -56,7 +56,7 @@ export default function GameResultScreen({ route, navigation }) {
                 <FontAwesome 
                     name={isCorrect ? "check-circle" : "times-circle"} 
                     size={24} 
-                    color={isCorrect ? "#28a745" : "#d9534f"} 
+                    color={isCorrect ? "#28a745" : "#dd4f4aff"} 
                     style={styles.icon}
                 />
             </View>
